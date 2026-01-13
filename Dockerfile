@@ -31,5 +31,5 @@ COPY src/lavalink ./lavalink
 
 EXPOSE 8080
 
-# Démarrage
-CMD ["sh", "-c", "java -Xmx256M -jar ./lavalink/Lavalink.jar & node dist/index.js"]
+# Démarrage : On laisse 45 secondes à Java pour s'initialiser sur Render
+CMD ["sh", "-c", "java -Xmx256M -jar ./lavalink/Lavalink.jar & sleep 45 && node dist/index.js"]
