@@ -8,7 +8,8 @@ export function createLavalinkManager(client: Client) {
         host: process.env.LAVALINK_HOST || "127.0.0.1",
         port: parseInt(process.env.LAVALINK_PORT || "8080"),
         authorization: process.env.LAVALINK_PASSWORD || "youshallnotpass",
-        retryAmount: 15, // Augmente le nombre de tentatives
+        secure: false,
+        retryAmount: 30, // 30 tentatives couvrent largement le démarrage lent de Java
         retryDelay: 5000, // Attendre 5 secondes entre chaque essai
       },
     ],
