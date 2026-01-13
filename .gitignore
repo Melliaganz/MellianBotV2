@@ -1,0 +1,14 @@
+# Secrets (À NE JAMAIS PUSH)
+.env
+youtube-cookies.json
+
+# Dépendances
+node_modules/
+.yarn/
+
+# Build & Logs
+dist/
+*.log
+
+# Autres
+.DS_Store
