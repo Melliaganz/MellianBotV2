@@ -13,7 +13,7 @@ lavalink:
     - repository: "https://maven.topi.ca/releases"
 
   server:
-    password: "youshallnotpass"
+    password: "${LAVALINK_PASSWORD}"
     sources:
       youtube: false 
       bandcamp: true
@@ -24,6 +24,9 @@ lavalink:
       local: false
 
 plugins:
+  youtube:
+    enabled: true
+    allowSearch: true
   lavasrc:
     providers: 
       - "ytsearch:\"%ISRC%\""
