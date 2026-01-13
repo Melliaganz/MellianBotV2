@@ -1,5 +1,5 @@
 import { Client, GatewayIntentBits } from "discord.js";
-import { createLavalinkManager } from "./lavalink/manager";
+import { createLavalinkManager } from "./lavalink/manager.js";
 import { handleMusicCommands, setupPlayerCollector } from "./commands/music";
 import { handleSystemCommands } from "./commands/system";
 import "dotenv/config";
