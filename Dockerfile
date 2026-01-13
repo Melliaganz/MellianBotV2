@@ -1,26 +1,36 @@
 # Étape 1 : Build de l'application
-FROM node:20-slim AS builder
+FROM node:20-bookworm-slim AS builder
 WORKDIR /app
-COPY package.json yarn.lock ./
+
+# Activation de Corepack pour supporter Yarn 4
+RUN corepack enable
+
+COPY package.json yarn.lock .yarnrc.yml ./
+
+# Installation des dépendances avec Yarn Berry
 RUN yarn install
+
 COPY . .
 RUN yarn build
 
 # Étape 2 : Runtime avec Java et Node
-FROM node:20-slim
+FROM node:20-bookworm-slim
 WORKDIR /app
 
-# Installation de Java 17 pour Lavalink
-RUN apt-get update && apt-get install -y openjdk-17-jre-headless && apt-get clean
+# Mise à jour des paquets système pour corriger les vulnérabilités et installation de Java 17
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends openjdk-17-jre-headless && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Copie des fichiers nécessaires
+# Copie des fichiers depuis le builder
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY src/lavalink ./lavalink
 
-# Port pour le serveur web (pour Uptime Robot)
 EXPOSE 8080
 
-# Script de démarrage pour lancer Lavalink et le Bot
-CMD java -jar ./lavalink/Lavalink.jar & node dist/index.js
+# Commande de démarrage optimisée pour la RAM (256Mo max pour Lavalink)
+CMD java -Xmx256M -jar ./lavalink/Lavalink.jar & node dist/index.js

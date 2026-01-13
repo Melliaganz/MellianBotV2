@@ -1,4 +1,4 @@
-import { Message, EmbedBuilder } from 'discord.js';
+import { Message, EmbedBuilder, TextChannel } from 'discord.js';
 
 export async function handleSystemCommands(message: Message, cmd: string) {
     if (cmd === 'ping') {
@@ -11,7 +11,9 @@ export async function handleSystemCommands(message: Message, cmd: string) {
         }
 
         const channel = message.channel;
-        if (channel.isTextBased() && 'bulkDelete' in channel) {
+        
+        // Correction : On vérifie si le salon est bien une instance de TextChannel ou possède bulkDelete
+        if (channel.isTextBased() && 'bulkDelete' in channel && 'send' in channel) {
             try {
                 const messages = await channel.messages.fetch({ limit: 100 });
                 const toDelete = messages.filter(m => 
@@ -21,7 +23,9 @@ export async function handleSystemCommands(message: Message, cmd: string) {
                 if (toDelete.size === 0) return message.reply("⚠️ Aucun message à nettoyer.");
 
                 await channel.bulkDelete(toDelete, true);
-                const confirm = await message.channel.send("✅ Nettoyage terminé !");
+                
+                // Ici TypeScript sait désormais que .send() existe
+                const confirm = await channel.send("✅ Nettoyage terminé !");
                 setTimeout(() => confirm.delete().catch(() => null), 3000);
             } catch (error: any) {
                 if (error.code === 50013) {
