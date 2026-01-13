@@ -1,14 +1,20 @@
-# Secrets (À NE JAMAIS PUSH)
-.env
-youtube-cookies.json
-
 # Dépendances
 node_modules/
 .yarn/
+.pnp.*
 
-# Build & Logs
+# Compilation
 dist/
+
+# Secrets & Configuration personnelle
+.env
+youtube-cookies.json
+src/lavalink/Lavalink.jar
+src/lavalink/application.yml
+src/lavalink/plugins/
+
+# Logs
 *.log
 
-# Autres
+# Système
 .DS_Store
