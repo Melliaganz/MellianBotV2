@@ -4,9 +4,9 @@ import { Client } from 'discord.js';
 export function createLavalinkManager(client: Client) {
     const manager = new LavalinkManager({
         nodes: [{
-            host: 'localhost',
-            port: 2333,
-            authorization: 'youshallnotpass',
+            host: process.env.LAVALINK_HOST || '127.0.0.1', 
+            port: parseInt(process.env.LAVALINK_PORT || '8080'),
+            authorization: process.env.LAVALINK_PASSWORD || 'youshallnotpass',
             secure: false
         }],
         sendToShard: (guildId, payload) => {

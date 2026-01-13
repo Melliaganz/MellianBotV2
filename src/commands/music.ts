@@ -5,7 +5,7 @@ import {
   getControlRow,
   getSecondRow,
   generateQueueEmbed,
-} from "../utils/embeds";
+} from "../utils/embeds.js";
 
 const activeMessages = new Map<string, Message>();
 
