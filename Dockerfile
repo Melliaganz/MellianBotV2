@@ -5,9 +5,10 @@ WORKDIR /app
 # Activation de Corepack pour supporter Yarn 4
 RUN corepack enable
 
-COPY package.json yarn.lock .yarnrc.yml ./
+# On copie les fichiers de lock. Le .yarnrc.yml? ne fera pas planter s'il manque
+COPY package.json yarn.lock .yarnrc.yml* ./
 
-# Installation des dépendances avec Yarn Berry
+# Installation des dépendances
 RUN yarn install
 
 COPY . .
@@ -17,7 +18,7 @@ RUN yarn build
 FROM node:20-bookworm-slim
 WORKDIR /app
 
-# Mise à jour des paquets système pour corriger les vulnérabilités et installation de Java 17
+# Mise à jour et installation de Java 17
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends openjdk-17-jre-headless && \
@@ -32,5 +33,5 @@ COPY src/lavalink ./lavalink
 
 EXPOSE 8080
 
-# Commande de démarrage optimisée pour la RAM (256Mo max pour Lavalink)
+# Commande de démarrage (Lavalink + Bot)
 CMD java -Xmx256M -jar ./lavalink/Lavalink.jar & node dist/index.js
