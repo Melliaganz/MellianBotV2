@@ -3,6 +3,12 @@ import { createLavalinkManager } from "./lavalink/manager";
 import { handleMusicCommands, setupPlayerCollector } from "./commands/music";
 import { handleSystemCommands } from "./commands/system";
 import "dotenv/config";
+import express from 'express';
+const app = express();
+const PORT = process.env.PORT || 8080;
+
+app.get('/', (req, res) => res.send('MellianBot est en vie !'));
+app.listen(PORT, () => console.log(`Serveur de monitoring sur le port ${PORT}`));
 
 const client = new Client({
   intents: [
