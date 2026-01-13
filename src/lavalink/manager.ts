@@ -1,7 +1,19 @@
 import { LavalinkManager } from "lavalink-client";
 import { Client } from "discord.js";
-
+import fs from "fs";
+import path from "path";
 export function createLavalinkManager(client: Client) {
+  // --- SECTION DEBUG ---
+  const lavalinkDir = path.join(process.cwd(), "lavalink");
+  console.log(`[Debug] Vérification du dossier : ${lavalinkDir}`);
+  try {
+    const files = fs.readdirSync(lavalinkDir);
+    console.log(
+      `[Debug] Fichiers trouvés dans /lavalink : ${files.join(", ")}`
+    );
+  } catch (err) {
+    console.log(`[Debug] Erreur : Impossible de lire le dossier /lavalink`);
+  }
   const manager = new LavalinkManager({
     nodes: [
       {
