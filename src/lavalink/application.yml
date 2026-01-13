@@ -13,7 +13,7 @@ lavalink:
     - repository: "https://maven.topi.ca/releases"
 
   server:
-    password: "${LAVALINK_PASSWORD}"
+    password: "${LAVALINK_PASSWORD:youshallnotpass}"
     sources:
       youtube: false 
       bandcamp: true
