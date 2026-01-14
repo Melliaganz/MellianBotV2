@@ -27,13 +27,18 @@ plugins:
   youtube:
     enabled: true
     allowSearch: true
-    cookies: "/etc/secrets/youtube-cookies.json"
     allowDirectVideoIds: true
     allowDirectPlaylistIds: true
+    # On laisse les cookies désactivés pour éviter les bans d'IP sur Render
+    clients:
+      - TVHTML5EMBEDDED
+      - ANDROID_VR
+      - MUSIC
   lavasrc:
     providers: 
-      - "ytsearch:\"%ISRC%\""
-      - "ytsearch:%QUERY%"
+      - "spsearch:%QUERY%"       # Priorité 1 : Spotify (Très stable)
+      - "scsearch:%QUERY%"       # Priorité 2 : SoundCloud (Stable)
+      - "ytsearch:\"%ISRC%\""    # Priorité 3 : YouTube (Uniquement via code ISRC)
     sources:
       spotify: true
     spotify:
