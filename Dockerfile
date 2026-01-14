@@ -18,10 +18,10 @@ RUN apt-get update && \
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
-# On s'assure que le contenu du dossier lavalink est bien copié
+# Copie spécifique depuis src/lavalink selon ton image
 COPY src/lavalink ./lavalink
 
 EXPOSE 8080
 
-# CORRECTION : On définit le chemin de la config explicitement pour Java
-CMD ["sh", "-c", "java -Xmx256M -Dlavalink.server.config.path=./lavalink/application.yml -jar ./lavalink/Lavalink.jar & sleep 90 && node dist/index.js"]
+# Lancement : On copie le yml au centre, on lance Java, on attend, puis Node
+CMD ["sh", "-c", "cp ./lavalink/application.yml ./application.yml && java -Xmx256M -jar ./lavalink/Lavalink.jar & sleep 60 && node dist/index.js"]

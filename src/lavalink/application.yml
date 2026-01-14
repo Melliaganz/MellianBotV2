@@ -13,7 +13,7 @@ lavalink:
     - repository: "https://maven.topi.ca/releases"
 
   server:
-    password: "${LAVALINK_PASSWORD:youshallnotpass}"
+    password: "youshallnotpass"
     sources:
       youtube: false 
       bandcamp: true
@@ -27,6 +27,8 @@ plugins:
   youtube:
     enabled: true
     allowSearch: true
+    allowDirectVideoIds: true
+    allowDirectPlaylistIds: true
   lavasrc:
     providers: 
       - "ytsearch:\"%ISRC%\""
@@ -34,6 +36,6 @@ plugins:
     sources:
       spotify: true
     spotify:
-      clientId: "${SPOTIFY_CLIENT_ID}"
-      clientSecret: "${SPOTIFY_CLIENT_SECRET}"
+      clientId: "151027d0e7464119b97a8db0cad339b4"
+      clientSecret: "d61006b98a6644499e128959dc7a499f"
       countryCode: "FR"
