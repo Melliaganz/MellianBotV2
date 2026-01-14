@@ -27,7 +27,7 @@ plugins:
   youtube:
     enabled: true
     allowSearch: true
-    cookies: "youtube-cookies.json"
+    cookies: "/etc/secrets/youtube-cookies.json"
     allowDirectVideoIds: true
     allowDirectPlaylistIds: true
   lavasrc:

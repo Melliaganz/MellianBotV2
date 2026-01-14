@@ -22,5 +22,5 @@ COPY src/lavalink ./lavalink
 
 EXPOSE 8080
 
-# Lancement : Render montera le youtube-cookies.json à la racine /app/
+# On lance Java et Node avec un délai pour laisser les plugins charger
 CMD ["sh", "-c", "cp ./lavalink/application.yml ./application.yml && java -Xmx256M -jar ./lavalink/Lavalink.jar & sleep 100 && node dist/index.js"]
