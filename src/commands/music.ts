@@ -26,7 +26,7 @@ export async function handleMusicCommands(
     if (!node) return message.reply("❌ Nœud Lavalink non disponible.");
 
     const res = await node.search(
-      { query: query.includes("http") ? query : `ytsearch:${query}` },
+      { query: query.includes("http") ? query : `spsearch:${query}` },
       message.author
     );
     if (!res.tracks.length) return message.reply("❌ Aucun résultat.");
