@@ -9,8 +9,9 @@ export function createLavalinkManager(client: Client) {
         port: parseInt(process.env.LAVALINK_PORT || "8080"),
         authorization: "youshallnotpass",
         secure: false,
-        retryAmount: 50,
-        retryDelay: 5000,
+        // On augmente l'agressivité des tentatives de reconnexion
+        retryAmount: 100, 
+        retryDelay: 10000, // 10 secondes entre chaque test
       },
     ],
     sendToShard: (guildId, payload) => {
@@ -23,11 +24,12 @@ export function createLavalinkManager(client: Client) {
   });
 
   manager.nodeManager.on("connect", (node) => {
-    console.log(`[Lavalink] Nœud ${node.options.host} connecté !`);
+    console.log(`[Lavalink] Nœud ${node.options.host} connecté avec succès !`);
   });
 
   manager.nodeManager.on("error", (node, error) => {
-    console.log(`[Lavalink] Erreur sur le nœud ${node.options.host}:`, error.message);
+    // On log l'erreur sans crasher
+    console.log(`[Lavalink] Attente du nœud ${node.options.host}... (${error.message})`);
   });
 
   return manager;

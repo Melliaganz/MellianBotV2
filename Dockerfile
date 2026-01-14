@@ -23,5 +23,5 @@ COPY src/lavalink ./lavalink
 
 EXPOSE 8080
 
-# Lancement : On copie le yml au centre, on lance Java, on attend, puis Node
-CMD ["sh", "-c", "cp ./lavalink/application.yml ./application.yml && java -Xmx256M -jar ./lavalink/Lavalink.jar & sleep 60 && node dist/index.js"]
+# On attend que Lavalink ait fini de charger les plugins (très lent sur Render)
+CMD ["sh", "-c", "cp ./lavalink/application.yml ./application.yml && java -Xmx256M -jar ./lavalink/Lavalink.jar & sleep 100 && node dist/index.js"]
