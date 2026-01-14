@@ -29,19 +29,13 @@ plugins:
     allowSearch: true
     allowDirectVideoIds: true
     allowDirectPlaylistIds: true
-    # On laisse les cookies désactivés pour éviter les bans d'IP sur Render
-    clients:
-      - TVHTML5EMBEDDED
-      - ANDROID_VR
-      - MUSIC
   lavasrc:
     providers: 
-      - "spsearch:%QUERY%"       # Priorité 1 : Spotify (Très stable)
-      - "scsearch:%QUERY%"       # Priorité 2 : SoundCloud (Stable)
-      - "ytsearch:\"%ISRC%\""    # Priorité 3 : YouTube (Uniquement via code ISRC)
+      - "ytsearch:\"%ISRC%\""
+      - "ytsearch:%QUERY%"
     sources:
       spotify: true
     spotify:
-      clientId: "${SPOTIFY_CLIENT_ID}"
-      clientSecret: "${SPOTIFY_CLIENT_SECRET}"
+      clientId: "151027d0e7464119b97a8db0cad339b4"
+      clientSecret: "d61006b98a6644499e128959dc7a499f"
       countryCode: "FR"

@@ -1,9 +1,10 @@
-import { Client, GatewayIntentBits } from "discord.js";
+import { Client, GatewayIntentBits, ActivityType } from "discord.js";
 import { createLavalinkManager } from "./lavalink/manager.js";
 import { handleMusicCommands, setupPlayerCollector } from "./commands/music.js";
 import { handleSystemCommands } from "./commands/system.js";
 import "dotenv/config";
 import express from 'express';
+
 const app = express();
 const PORT = process.env.PORT || 8080;
 
@@ -21,12 +22,70 @@ const client = new Client({
 
 const lavalink = createLavalinkManager(client);
 
-lavalink.on("trackStart", (player) => {
+const setGlobalStatus = () => {
+  const playingCount = lavalink.players.size;
+  const statusText = playingCount > 0 
+    ? `du son sur ${playingCount} serveurs | !play` 
+    : "des sons de ouf avec !play";
+
+  client.user?.setPresence({
+    activities: [{
+      name: "custom",
+      type: ActivityType.Custom,
+      state: `Ecoute : ${statusText}`
+    }],
+    status: "online"
+  });
+};
+
+lavalink.on("trackStart", async (player, track) => {
+  if (!track) return;
   setupPlayerCollector(player, client);
+  
+  setGlobalStatus();
+
+  const guild = client.guilds.cache.get(player.guildId);
+  if (guild && client.user) {
+    try {
+      const botMember = guild.members.me || await guild.members.fetch(client.user.id);
+      const title = track.info.title;
+      const shortTitle = title.length > 25 ? title.substring(0, 25) + "..." : title;
+      await botMember.setNickname(`♪ ${shortTitle}`);
+    } catch (e) {
+      console.log(`Impossible de changer le pseudo sur ${guild.name} (Permissions ?)`);
+    }
+  }
 });
 
-client.once("clientReady", (c) => {
+lavalink.on("queueEnd", async (player) => {
+  const guild = client.guilds.cache.get(player.guildId);
+  if (guild && client.user) {
+    try {
+      const botMember = guild.members.me || await guild.members.fetch(client.user.id);
+      await botMember.setNickname(null);
+    } catch (e) {
+      console.log("Erreur reset pseudo.");
+    }
+  }
+  setGlobalStatus();
+});
+
+lavalink.on("playerDestroy", async (player) => {
+  const guild = client.guilds.cache.get(player.guildId);
+  if (guild && client.user) {
+    try {
+      const botMember = guild.members.me || await guild.members.fetch(client.user.id);
+      await botMember.setNickname(null);
+    } catch (e) {
+      console.log("Erreur reset pseudo.");
+    }
+  }
+  setGlobalStatus();
+});
+
+client.once("ready", (c) => {
   lavalink.init({ id: c.user.id, username: c.user.username });
+  setGlobalStatus();
   console.log(`${c.user.tag} prêt !`);
 });
 
@@ -43,7 +102,9 @@ client.on("messageCreate", async (m) => {
 });
 
 const shutdown = async () => {
-  client.user?.setPresence({ status: "invisible" });
+  if (client.user) {
+    client.user.setPresence({ status: "invisible" });
+  }
 
   const players = Array.from(lavalink.players.values());
   for (const player of players) {
