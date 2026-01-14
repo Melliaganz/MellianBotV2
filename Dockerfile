@@ -18,10 +18,9 @@ RUN apt-get update && \
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
-# Copie spécifique depuis src/lavalink selon ton image
 COPY src/lavalink ./lavalink
 
 EXPOSE 8080
 
-# On attend que Lavalink ait fini de charger les plugins (très lent sur Render)
+# Lancement : Render montera le youtube-cookies.json à la racine /app/
 CMD ["sh", "-c", "cp ./lavalink/application.yml ./application.yml && java -Xmx256M -jar ./lavalink/Lavalink.jar & sleep 100 && node dist/index.js"]

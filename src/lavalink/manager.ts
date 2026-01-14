@@ -9,9 +9,8 @@ export function createLavalinkManager(client: Client) {
         port: parseInt(process.env.LAVALINK_PORT || "8080"),
         authorization: "youshallnotpass",
         secure: false,
-        // On augmente l'agressivité des tentatives de reconnexion
         retryAmount: 100, 
-        retryDelay: 10000, // 10 secondes entre chaque test
+        retryDelay: 10000,
       },
     ],
     sendToShard: (guildId, payload) => {
@@ -28,7 +27,6 @@ export function createLavalinkManager(client: Client) {
   });
 
   manager.nodeManager.on("error", (node, error) => {
-    // On log l'erreur sans crasher
     console.log(`[Lavalink] Attente du nœud ${node.options.host}... (${error.message})`);
   });
 
