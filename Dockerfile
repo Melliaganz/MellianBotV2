@@ -1,26 +1,20 @@
-# Étape 1 : Build
-FROM node:20-bookworm-slim AS builder
+FROM node:20-slim
+
 WORKDIR /app
+
+# Activation de Corepack pour supporter Yarn 4
 RUN corepack enable
-COPY package.json yarn.lock* .yarnrc.yml* ./
-RUN yarn config set nodeLinker node-modules && yarn install
+
+# Installation des dépendances
+COPY package.json yarn.lock ./
+# Note : Pour Yarn 4+, on utilise souvent simplement 'yarn install'
+RUN yarn install
+
+# Copie du reste du code
 COPY . .
+
+# Build du projet TypeScript
 RUN yarn build
 
-# Étape 2 : Runtime
-FROM node:20-bookworm-slim
-WORKDIR /app
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends openjdk-17-jre-headless && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-COPY src/lavalink ./lavalink
-
-EXPOSE 8080
-
-# On lance Java et Node avec un délai pour laisser les plugins charger
-CMD ["sh", "-c", "cp ./lavalink/application.yml ./application.yml && java -Xmx256M -jar ./lavalink/Lavalink.jar & sleep 100 && node dist/index.js"]
+# Commande de lancement
+CMD ["node", "dist/index.js"]
