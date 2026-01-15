@@ -18,3 +18,4 @@ src/lavalink/plugins/
 
 # Système
 .DS_Store
+docker-compose.yml
