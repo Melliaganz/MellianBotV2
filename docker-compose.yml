@@ -1,0 +1,25 @@
+services:
+  lavalink:
+    image: ghcr.io/lavalink-devs/lavalink:4
+    container_name: mellian_lavalink
+    restart: unless-stopped
+    ports:
+      - "2333:2333"
+    volumes:
+      - ./src/lavalink/application.yml:/opt/Lavalink/application.yml:Z
+    env_file:
+      - .env
+    environment:
+      - SERVER_PORT=2333
+
+  bot:
+    build: .
+    container_name: mellian_bot
+    restart: unless-stopped
+    depends_on:
+      - lavalink
+    env_file:
+      - .env
+    environment:
+      - LAVALINK_HOST=lavalink
+      - LAVALINK_PORT=2333
