@@ -1,4 +1,4 @@
-import { Message, EmbedBuilder, TextChannel } from 'discord.js';
+import { Message, EmbedBuilder } from 'discord.js';
 
 export async function handleSystemCommands(message: Message, cmd: string) {
     if (cmd === 'ping') {

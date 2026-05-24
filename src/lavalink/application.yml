@@ -1,21 +1,18 @@
 server:
-  port: 8080
+  port: 2333
   address: 0.0.0.0
 
 lavalink:
   plugins:
-    - dependency: "dev.lavalink.youtube:youtube-plugin:1.16.0"
-    - dependency: "com.github.topi314.lavasrc:lavasrc-plugin:4.4.1"
-  
+    - dependency: "dev.lavalink.youtube:youtube-plugin:1.18.1"
+
   pluginsRepositories:
     - repository: "https://maven.lavalink.dev/releases"
-    - repository: "https://jitpack.io"
-    - repository: "https://maven.topi.ca/releases"
 
   server:
-    password: "youshallnotpass"
+    password: "${LAVALINK_PASSWORD:youshallnotpass}"
     sources:
-      youtube: false 
+      youtube: false
       bandcamp: true
       soundcloud: true
       twitch: true
@@ -29,13 +26,9 @@ plugins:
     allowSearch: true
     allowDirectVideoIds: true
     allowDirectPlaylistIds: true
-  lavasrc:
-    providers: 
-      - "ytsearch:\"%ISRC%\""
-      - "ytsearch:%QUERY%"
-    sources:
-      spotify: true
-    spotify:
-      clientId: "151027d0e7464119b97a8db0cad339b4"
-      clientSecret: "d61006b98a6644499e128959dc7a499f"
-      countryCode: "FR"
+    oauth:
+      enabled: true
+      refreshToken: "${LAVALINK_YOUTUBE_REFRESH_TOKEN:}"
+    clients:
+      - MUSIC
+      - ANDROID_VR

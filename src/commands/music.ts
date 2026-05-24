@@ -1,4 +1,4 @@
-import { Message, TextChannel, ComponentType, MessageFlags } from "discord.js";
+import { Client, Message, TextChannel, ComponentType, MessageFlags } from "discord.js";
 import { LavalinkManager, Player } from "lavalink-client";
 import {
   generateMainEmbed,
@@ -8,6 +8,7 @@ import {
 } from "../utils/embeds.js";
 
 const activeMessages = new Map<string, Message>();
+const activeCollectors = new Map<string, { stop: () => void }>();
 
 export async function handleMusicCommands(
   message: Message,
@@ -23,7 +24,7 @@ export async function handleMusicCommands(
     if (!query) return message.reply("❌ Précise une recherche.");
 
     const node = lavalink.nodeManager.nodes.values().next().value;
-    if (!node) return message.reply("❌ Nœud Lavalink non disponible.");
+    if (!node || !node.connected) return message.reply("❌ Nœud Lavalink non disponible, réessaie dans un instant.");
 
     const res = await node.search(
       { query: query.includes("http") ? query : `ytsearch:${query}` },
@@ -100,6 +101,8 @@ export async function handleMusicCommands(
     if (!player)
       return message.reply("❌ Je ne suis pas connecté dans un salon.");
 
+    activeCollectors.get(player.guildId)?.stop();
+    activeCollectors.delete(player.guildId);
     activeMessages.delete(player.guildId);
     await player.destroy();
     message.reply("🛑 Musique arrêtée et déconnexion effectuée.");
@@ -126,7 +129,7 @@ async function updatePlayerMessage(player: Player) {
   }
 }
 
-export async function setupPlayerCollector(player: Player, client: any) {
+export async function setupPlayerCollector(player: Player, client: Client<true>) {
   const channel = client.channels.cache.get(
     player.textChannelId!
   ) as TextChannel;
@@ -134,6 +137,9 @@ export async function setupPlayerCollector(player: Player, client: any) {
 
   const track = player.queue.current;
   if (!track) return;
+
+  const oldCollector = activeCollectors.get(player.guildId);
+  if (oldCollector) oldCollector.stop();
 
   const oldMsg = activeMessages.get(player.guildId);
   if (oldMsg) oldMsg.delete().catch(() => null);
@@ -150,6 +156,18 @@ export async function setupPlayerCollector(player: Player, client: any) {
 
   const collector = mainMessage.createMessageComponentCollector({
     componentType: ComponentType.Button,
+    filter: (i) => {
+      const guild = client.guilds.cache.get(i.guildId ?? "");
+      return guild?.members.cache.get(i.user.id)?.voice.channelId === player.voiceChannelId;
+    },
+    idle: 10 * 60 * 1000,
+  });
+
+  activeCollectors.set(player.guildId, collector);
+
+  collector.on("end", () => {
+    activeCollectors.delete(player.guildId);
+    activeMessages.delete(player.guildId);
   });
 
   collector.on("collect", async (i) => {
@@ -190,7 +208,7 @@ export async function setupPlayerCollector(player: Player, client: any) {
         break;
 
       case "stop":
-        activeMessages.delete(player.guildId);
+        collector.stop();
         await player.destroy();
         await i.deferUpdate();
         break;

@@ -7,7 +7,7 @@ export function createLavalinkManager(client: Client) {
       {
         host: process.env.LAVALINK_HOST || "127.0.0.1",
         port: parseInt(process.env.LAVALINK_PORT || "8080"),
-        authorization: "youshallnotpass",
+        authorization: process.env.LAVALINK_PASSWORD || "youshallnotpass",
         secure: false,
         retryAmount: 100, 
         retryDelay: 10000,

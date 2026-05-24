@@ -1,31 +1,20 @@
 {
   "name": "mellianbot",
-  "packageManager": "yarn@4.12.0",
+  "packageManager": "yarn@4.15.0",
   "type": "module",
   "scripts": {
-    "dev": "yarn tsx --env-file=.env src/index.ts",
+    "dev": "yarn tsx src/index.ts",
     "build": "tsc"
   },
   "dependencies": {
-    "@discord-player/extractor": "^7.1.0",
-    "@discord-player/opus": "^7.1.0",
-    "@discord-player/utils": "^7.1.0",
-    "@discordjs/voice": "^0.19.0",
-    "discord-player": "^7.1.0",
     "discord.js": "^14.25.1",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.3.1",
     "express": "^5.2.1",
-    "ffmpeg-static": "^5.3.0",
-    "googleapis": "^170.0.0",
-    "lavalink-client": "^2.7.8",
-    "libsodium-wrappers": "^0.8.0",
-    "mediaplex": "^1.0.0",
-    "play-dl": "^1.9.7",
-    "youtubei.js": "^16.0.1"
+    "lavalink-client": "^2.9.9"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
-    "@types/node": "^25.0.8",
+    "@types/node": "^25.5.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }

@@ -40,7 +40,7 @@ const setGlobalStatus = () => {
 
 lavalink.on("trackStart", async (player, track) => {
   if (!track) return;
-  setupPlayerCollector(player, client);
+  setupPlayerCollector(player, client as import("discord.js").Client<true>);
   
   setGlobalStatus();
 
